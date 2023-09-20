@@ -113,14 +113,42 @@ const App = () => {
     // console.log(formValues)
   }
 
-  const handleSubmit=(e)=>{
+  const handleSubmit= async(e)=>{
     e.preventDefault()
     setIsSubmit(true)
     setFormErrors(validateForm(formValues))
-     if(Object.keys(formErrors).length==0 && isSubmit){
-       navigate("/home")
+    //  if(Object.keys(formErrors).length==0 && isSubmit){
+    
+        try{
+          const response= await fetch("http://localhost:8000/api", {
+             method: 'PUT',
+             credentials: 'include',
+             headers: {
+               'Content-Type': 'application/json', // Set the content type to JSON
+             },
+             body: JSON.stringify({
+              firstName: formValues.firstName,
+              lastName: formValues.lastName,
+              emailId: formValues.emailId,
+              address1: formValues.address1,
+              address2: formValues.address2,
+              zipCode: formValues.zipCode,
+              state: formValues.state,
+              country: formValues.country,
+              mobile: formValues.mobile,
+             }),
+           })
+            // const data= await response.json()
+            // console.log(data)
+            const data=((await response.json()))
+            console.log((data))
+         } 
+         catch(err){
+           console.log(err)
+         } 
+        
      }
-  }
+  
     
 
 //  const testing=()=>{
@@ -173,7 +201,6 @@ const App = () => {
             <span className="text-white font-bold mr-[50px]"> Mobile: </span>
             <div className="w-[412px] h-[30px]">
               <PhoneInput
-            
                 countryCodeEditable={true}
                 enableSearch={true}
                 value={formValues.mobile}
